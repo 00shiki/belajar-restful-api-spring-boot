@@ -2,6 +2,7 @@ package programmerzamannow.restful.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,6 +10,7 @@ import programmerzamannow.restful.entity.Contact;
 import programmerzamannow.restful.entity.User;
 import programmerzamannow.restful.model.ContactResponse;
 import programmerzamannow.restful.model.CreateContactRequest;
+import programmerzamannow.restful.model.SearchContactRequest;
 import programmerzamannow.restful.model.UpdateContactRequest;
 import programmerzamannow.restful.repository.ContactRepository;
 
@@ -73,4 +75,13 @@ public class ContactService {
 
         return toContactResponse(contact);
     }
+
+    @Transactional
+    public void delete(User user, String contactId) {
+        Contact contact = contactRepository.findFirstByUserAndId(user, contactId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found"));
+
+        contactRepository.delete(contact);
+    }
+
 }
